@@ -1,18 +1,27 @@
 import json
 import web
 from Models import RegisterModel, LoginModel
+
+web.config.debug = False
+
 urls = (
     '/', 'Home',
     '/register', 'Register',
     '/login', 'Login',
+    '/logout', 'Logout',
     '/postregistration', 'PostRegistration',
     '/postlogin', 'PostLogin'
 
 )
 
-render = web.template.render("Views/Templates", base="MainLayout")
+
 app = web.application(urls, globals())
 
+session = web.session.Session(app, web.session.DiskStore("Sessions"), initializer={'user': None})
+session_data = session.initializer
+
+
+render = web.template.render("Views/Templates", base="MainLayout", globals={'session': session_data, 'current_user': session_data["user"]})
 # Classes/Routes
 
 
@@ -49,12 +58,21 @@ class PostLogin:
         data = json.loads(res)
         login = LoginModel.LoginModel()
         user = login.check_user(data)
-
         if user:
+            session_data["user"] = user
             return user
 
         return 'error'
 
 
+class Logout:
+    def DELETE(self):
+        session['user'] = None
+        session_data['user'] = None
+        session.kill()
+        return 'success'
+
+
 if __name__ == "__main__":
     app.run()
+

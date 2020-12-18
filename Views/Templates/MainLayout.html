@@ -33,8 +33,12 @@ $var js: static/js/jquery-3.5.1.min.js static/js/axios.js static/js/mdb.min.js s
             <a class="nav-link" href="/settings">Settings</a>
           </li>
         </ul>
-      <a href="/login" class="nav-link ">Login</a>
-      <a href="/register"> <button class="btn btn-secondary active my-2 my-sm-0" type="">Register</button></a>
+      $if session['user'] == None:
+          <a href="/login" class="nav-link ">Login</a>
+          <a href="/register"> <button class="btn btn-secondary active my-2 my-sm-0" type="">Register</button></a>
+      $else:
+          <button id='logout' class="btn btn-danger active my-2 my-sm-0" type="">Logout</button>
+
 
   </div>
 </nav>

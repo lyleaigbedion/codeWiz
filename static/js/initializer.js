@@ -1,6 +1,21 @@
 //$.mdb.init()
 const registerForm = document.getElementById('register-form')
 const loginForm = document.getElementById('login-form')
+const logoutBtn = document.getElementById('logout')
+
+async function logout(e){
+    try{
+        const {data} = await axios.delete("/logout")
+        if(data === 'success'){
+          window.location.href = '/login'
+        }
+
+    }catch(err){
+        displayWarning(e)
+        console.error(err);
+    }
+
+}
 
 function displayWarning(event){
     const warningNode = document.createElement("DIV")
@@ -56,7 +71,7 @@ async function loginSubmit(e){
             alert("Could not login")
          }else{
             console.log(`Logged in as: ${data}`)
-            //window.location.href = '/'
+            window.location.href = '/'
          }
      } catch (err) {
         displayWarning(e)
@@ -73,4 +88,7 @@ if(registerForm){
 }
 if(loginForm){
     loginForm.addEventListener('submit', async (e)=> {await loginSubmit(e)})
+}
+if(logoutBtn){
+    logoutBtn.addEventListener('click', async (e)=> {await logout(e)})
 }
